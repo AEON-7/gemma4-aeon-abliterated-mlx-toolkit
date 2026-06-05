@@ -24,10 +24,11 @@ We evaluated **vLLM** on Apple Silicon (`vllm-project/vllm-metal`): as of 2026-0
 ## ⚡ Quickstart (host-native, Metal-accelerated) — pick FP8 or FP4
 
 ```bash
-pip install -U mlx-vlm                                     # macOS, Python 3.12 (arm64)
+python3 -m venv .venv && source .venv/bin/activate         # isolated env · Python 3.12 (arm64)
+pip install -U mlx-vlm
 ```
 
-Both builds are abliterated + multimodal; choose by **fidelity vs. size/speed**:
+Both builds are abliterated + multimodal; choose by **fidelity vs. size/speed** (set each request's `"model"` to the id you launch with; private repos need `hf auth login`):
 
 ```bash
 # ①  NEAR-LOSSLESS · FP8  →  MLX-8bit  ·  13.4 GB  ·  24 GB+ RAM  ·  highest fidelity
