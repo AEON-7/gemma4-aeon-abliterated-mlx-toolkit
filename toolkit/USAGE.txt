@@ -1,0 +1,17 @@
+gemma4-aeon-mlx-toolkit — Apple Silicon MLX toolkit for the Gemma-4-12B AEON Abliterated grid
+
+  aeon serve                 Start the OpenAI-compatible mlx_vlm.server (env: MODEL, PORT)
+  aeon generate [args]       One-off mlx_vlm.generate (env: MODEL; pass --image / --prompt)
+  aeon quantize [args]       Re-run the mixed mxfp4/mxfp8 quant (convert_mixed_fp4.py)
+  aeon validate [args]       Abliteration + coherence validation harness
+  aeon benchmark [args]      tok/s / TTFT / peak-RAM benchmark
+  aeon version               Show mlx / mlx-vlm versions
+  aeon help                  This message
+
+Models (Hugging Face):
+  AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4     (compact, 9.3 GB, 16 GB Macs)
+  AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit   (near-lossless, 13.4 GB, 24 GB+)
+
+!! Metal GPU is NOT available inside containers on macOS. For Metal-accelerated inference,
+   run host-native on your Mac:  pip install mlx-vlm && python -m mlx_vlm.server --model <repo>
+   Full guide: https://github.com/AEON-7/gemma4-aeon-mlx-toolkit#quickstart
