@@ -23,19 +23,20 @@ We evaluated **vLLM** on Apple Silicon (`vllm-project/vllm-metal`): as of 2026-0
 
 ## ⚡ Quickstart (host-native, Metal-accelerated) — pick FP8 or FP4
 
+**0 → running on a fresh Mac** (no Python, no tools needed) — [`uv`](https://docs.astral.sh/uv/) installs Python + the deps for you:
+
 ```bash
-python3 -m venv .venv && source .venv/bin/activate         # isolated env · Python 3.12 (arm64)
-pip install -U mlx-vlm
+curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env     # one-time: install uv
 ```
 
-Both builds are abliterated + multimodal; choose by **fidelity vs. size/speed** (set each request's `"model"` to the id you launch with; private repos need `hf auth login`):
+Both builds are abliterated + multimodal; pick **one** by fidelity vs. size/speed (uv fetches Python 3.12 + mlx-vlm on first run; set each request's `"model"` to the launched id; private repos need `hf auth login`):
 
 ```bash
-# ①  NEAR-LOSSLESS · FP8  →  MLX-8bit  ·  13.4 GB  ·  24 GB+ RAM  ·  highest fidelity
-python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit --port 8080
+# ①  NEAR-LOSSLESS · FP8 · 13.4 GB · 24 GB+ RAM
+uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit --port 8080
 
-# ②  HIGH-QUALITY COMPACT · FP4  →  MLXFP4  ·  9.3 GB  ·  runs on 16 GB  ·  faster, less memory
-python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4 --port 8080
+# ②  COMPACT · FP4 · 9.3 GB · 16 GB RAM · faster
+uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4 --port 8080
 ```
 
 ```bash
