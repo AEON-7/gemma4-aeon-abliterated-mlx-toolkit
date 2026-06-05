@@ -21,15 +21,24 @@ We evaluated **vLLM** on Apple Silicon (`vllm-project/vllm-metal`): as of 2026-0
 
 ---
 
-## ⚡ Quickstart (host-native, Metal-accelerated)
+## ⚡ Quickstart (host-native, Metal-accelerated) — pick FP8 or FP4
 
 ```bash
 pip install -U mlx-vlm                                     # macOS, Python 3.12 (arm64)
+```
 
-# OpenAI-compatible server — text + image + audio
+Both builds are abliterated + multimodal; choose by **fidelity vs. size/speed**:
+
+```bash
+# ①  NEAR-LOSSLESS · FP8  →  MLX-8bit  ·  13.4 GB  ·  24 GB+ RAM  ·  highest fidelity
+python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit --port 8080
+
+# ②  HIGH-QUALITY COMPACT · FP4  →  MLXFP4  ·  9.3 GB  ·  runs on 16 GB  ·  faster, less memory
 python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4 --port 8080
+```
 
-# call it like any OpenAI endpoint
+```bash
+# call either like any OpenAI endpoint
 curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/json' \
   -d '{"messages":[{"role":"user","content":"Explain mixed-precision quantization."}]}'
 ```
