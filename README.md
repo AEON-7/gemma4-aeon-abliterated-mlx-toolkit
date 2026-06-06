@@ -29,14 +29,14 @@ Both builds are abliterated + multimodal and serve an OpenAI-compatible API on `
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
-uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit --port 8080
+uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit --port 8080 --max-kv-size 32768
 ```
 
 ### ▶ To run MLXFP4 — compact · FP4 · ~9.3 GB · 16 GB RAM · faster — paste this into your terminal:
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
-uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4 --port 8080
+uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4 --port 8080 --max-kv-size 16384
 ```
 
 Once it's running, call it like any OpenAI endpoint:
@@ -47,6 +47,36 @@ curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/jso
 ```
 
 Container convenience (host-native): `docker pull ghcr.io/aeon-7/gemma4-aeon-abliterated-mlx-toolkit` then `aeon serve` / `aeon validate` / `aeon benchmark`.
+
+## 🧠 Context length & memory tuning
+
+The quickstarts set a memory-safe `--max-kv-size` for each model's **minimum** target Mac. KV cache here costs only **~74 KB/token** — Gemma-4's hybrid attention keeps just the **8 full-attention layers** growing; the **40 sliding layers stay capped at 1024** — so even 128K context is cheap. Measured on an M4 Pro:
+
+| `--max-kv-size` | Context | KV added | **FP4** peak (10 GB) | **FP8** peak (14 GB) |
+|---:|---:|---:|---:|---:|
+| `8192` | 8K | 0.6 GB | ~12.3 GB | ~16.3 GB |
+| `16384` | 16K | 1.2 GB | ~13 GB | ~17 GB |
+| `32768` | 32K | 2.4 GB | ~14 GB | ~18 GB |
+| `65536` | 64K | 4.9 GB | ~17 GB | ~21 GB |
+| `131072` | 128K (max) | 9.7 GB | ~21 GB | ~25 GB |
+
+**Pick by unified memory:** 16 GB → `16384` (FP4) · 24 GB → `32768` (FP8) · 32 GB → `65536` · **48 GB+ → `131072`** (full 128K). Raise it until peak approaches your RAM; past that macOS swaps (slow). `--max-kv-size` is a *rotating* cap — beyond it, the oldest tokens are evicted.
+
+### All server flags
+
+| Flag | Default | Effect on performance / memory |
+|---|---|---|
+| `--max-kv-size N` | unbounded (model max 128K) | **Main context↔RAM knob.** Caps context to N tokens, ~74 KB/token. |
+| `--kv-bits {8,4}` + `--kv-quant-scheme {uniform,turboquant}` | off | Quantize the KV cache. `8` ≈ halves KV (→ ~2× context per GB); `4`/turboquant ≈ quarter, small quality cost. |
+| `--quantized-kv-start N` | — | Keep the first N tokens full-precision, quantize the rest. |
+| `--prefill-step-size N` | 2048 | Tokens per prefill step. Lower (512) = less transient RAM on long prompts, slightly slower; higher = faster prefill, more RAM. |
+| `--vision-cache-size N` | 20 | Cached image features. Lower to save RAM if you don't use vision. |
+| `--max-tokens N` | model ceiling | Default output cap per request (overridable per request). |
+| `--enable-thinking` | off | Gemma-4 chain-of-thought on by default. |
+| `--draft-model … --draft-kind {dflash,eagle3,mtp}` | off | Speculative decoding → faster generation (needs a drafter; more RAM). |
+| `--host / --port` | 0.0.0.0 / 8080 | Bind address/port (`127.0.0.1` = local-only). |
+
+**Stretch context on a small Mac:** add `--kv-bits 8` to roughly double the context that fits in the same RAM — e.g. FP4 on 16 GB: `--max-kv-size 32768 --kv-bits 8`.
 
 ## Which build? — minimum specs
 
