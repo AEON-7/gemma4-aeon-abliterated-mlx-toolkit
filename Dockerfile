@@ -7,9 +7,9 @@
 # OpenAI-compatible server (Metal when run on the Mac host; CPU under Linux/cloud).
 FROM python:3.12-slim
 
-LABEL org.opencontainers.image.title="gemma4-aeon-mlx-toolkit"
+LABEL org.opencontainers.image.title="gemma4-aeon-abliterated-mlx-toolkit"
 LABEL org.opencontainers.image.description="Apple Silicon MLX toolkit + OpenAI-compatible server for the Gemma-4-12B AEON Abliterated MLX quant grid (MLXFP4 / MLX-8bit)"
-LABEL org.opencontainers.image.source="https://github.com/AEON-7/gemma4-aeon-mlx-toolkit"
+LABEL org.opencontainers.image.source="https://github.com/AEON-7/gemma4-aeon-abliterated-mlx-toolkit"
 LABEL org.opencontainers.image.licenses="Gemma"
 LABEL org.opencontainers.image.vendor="AEON-7"
 
