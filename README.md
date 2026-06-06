@@ -1,11 +1,11 @@
-# gemma4-aeon-mlx-toolkit
+# gemma4-aeon-abliterated-mlx-toolkit
 
 **Apple-Silicon MLX builds of Gemma-4-12B AEON Abliterated — comparison card, reproducible toolkit, and OpenAI-compatible server.**
 
 [![MLXFP4](https://img.shields.io/badge/HF-MLXFP4%20(9.3GB)-blue)](https://huggingface.co/AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4)
 [![MLX-8bit](https://img.shields.io/badge/HF-MLX--8bit%20(13.4GB)-blue)](https://huggingface.co/AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit)
 [![BF16 source](https://img.shields.io/badge/HF-K4--BF16%20source-lightgrey)](https://huggingface.co/AEON-7/Gemma-4-12B-it-AEON-Abliterated-K4-BF16)
-[![container](https://img.shields.io/badge/GHCR-gemma4--aeon--mlx--toolkit-purple)](https://github.com/AEON-7/gemma4-aeon-mlx-toolkit/pkgs/container/gemma4-aeon-mlx-toolkit)
+[![container](https://img.shields.io/badge/GHCR-gemma4--aeon--abliterated--mlx--toolkit-purple)](https://github.com/AEON-7/gemma4-aeon-abliterated-mlx-toolkit/pkgs/container/gemma4-aeon-abliterated-mlx-toolkit)
 
 MLX (Apple Silicon) quantizations of [`Gemma-4-12B-it-AEON-Abliterated-K4-BF16`](https://huggingface.co/AEON-7/Gemma-4-12B-it-AEON-Abliterated-K4-BF16) — a K=4 multi-direction biprojection abliteration of `google/gemma-4-12B-it` (multimodal `gemma4_unified`: text + image + audio). Two builds shipped: a **near-lossless 8-bit** flagship and a **high-quality compact FP4** for tight memory budgets. **Agents: read [`AGENTS.md`](./AGENTS.md) first.**
 
@@ -46,7 +46,7 @@ curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/jso
   -d '{"messages":[{"role":"user","content":"Explain mixed-precision quantization."}]}'
 ```
 
-Container convenience (host-native): `docker pull ghcr.io/aeon-7/gemma4-aeon-mlx-toolkit` then `aeon serve` / `aeon validate` / `aeon benchmark`.
+Container convenience (host-native): `docker pull ghcr.io/aeon-7/gemma4-aeon-abliterated-mlx-toolkit` then `aeon serve` / `aeon validate` / `aeon benchmark`.
 
 ## Which build? — minimum specs
 

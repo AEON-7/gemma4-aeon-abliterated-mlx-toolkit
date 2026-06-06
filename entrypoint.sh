@@ -8,7 +8,7 @@ ensure_mlx() {
     pip install -q mlx mlx-vlm || {
       echo "[aeon] ERROR: MLX could not be installed on this platform." >&2
       echo "[aeon] Metal acceleration requires running host-native on Apple Silicon." >&2
-      echo "[aeon] See: https://github.com/AEON-7/gemma4-aeon-mlx-toolkit#quickstart" >&2
+      echo "[aeon] See: https://github.com/AEON-7/gemma4-aeon-abliterated-mlx-toolkit#quickstart" >&2
       exit 2
     }
   }

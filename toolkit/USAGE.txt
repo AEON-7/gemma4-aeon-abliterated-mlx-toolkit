@@ -1,4 +1,4 @@
-gemma4-aeon-mlx-toolkit — Apple Silicon MLX toolkit for the Gemma-4-12B AEON Abliterated grid
+gemma4-aeon-abliterated-mlx-toolkit — Apple Silicon MLX toolkit for the Gemma-4-12B AEON Abliterated grid
 
   aeon serve                 Start the OpenAI-compatible mlx_vlm.server (env: MODEL, PORT)
   aeon generate [args]       One-off mlx_vlm.generate (env: MODEL; pass --image / --prompt)
@@ -14,4 +14,4 @@ Models (Hugging Face):
 
 !! Metal GPU is NOT available inside containers on macOS. For Metal-accelerated inference,
    run host-native on your Mac:  pip install mlx-vlm && python -m mlx_vlm.server --model <repo>
-   Full guide: https://github.com/AEON-7/gemma4-aeon-mlx-toolkit#quickstart
+   Full guide: https://github.com/AEON-7/gemma4-aeon-abliterated-mlx-toolkit#quickstart
