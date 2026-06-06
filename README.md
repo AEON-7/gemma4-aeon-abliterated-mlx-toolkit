@@ -21,26 +21,27 @@ We evaluated **vLLM** on Apple Silicon (`vllm-project/vllm-metal`): as of 2026-0
 
 ---
 
-## ⚡ Quickstart (host-native, Metal-accelerated) — pick FP8 or FP4
+## ⚡ Quickstart (host-native, Metal-accelerated)
 
-**0 → running on a fresh Mac** (no Python, no tools needed) — [`uv`](https://docs.astral.sh/uv/) installs Python + the deps for you:
+Both builds are abliterated + multimodal and serve an OpenAI-compatible API on `127.0.0.1:8080`. **Copy the one block for the build you want** — it installs [`uv`](https://docs.astral.sh/uv/) (which fetches Python 3.12 + mlx-vlm on first run) and starts the server, all on a fresh Mac with nothing pre-installed. *(While the repos are private, run `hf auth login` first; in requests set `"model"` to the launched id.)*
+
+### ▶ To run MLX-8bit — near-lossless · FP8 · ~13.4 GB · 24 GB+ RAM — paste this into your terminal:
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env     # one-time: install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
+uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit --port 8080
 ```
 
-Both builds are abliterated + multimodal; pick **one** by fidelity vs. size/speed (uv fetches Python 3.12 + mlx-vlm on first run; set each request's `"model"` to the launched id; private repos need `hf auth login`):
+### ▶ To run MLXFP4 — compact · FP4 · ~9.3 GB · 16 GB RAM · faster — paste this into your terminal:
 
 ```bash
-# ①  NEAR-LOSSLESS · FP8 · 13.4 GB · 24 GB+ RAM
-uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit --port 8080
-
-# ②  COMPACT · FP4 · 9.3 GB · 16 GB RAM · faster
+curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4 --port 8080
 ```
 
+Once it's running, call it like any OpenAI endpoint:
+
 ```bash
-# call either like any OpenAI endpoint
 curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/json' \
   -d '{"messages":[{"role":"user","content":"Explain mixed-precision quantization."}]}'
 ```
