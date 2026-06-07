@@ -46,6 +46,24 @@ curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/jso
   -d '{"messages":[{"role":"user","content":"Explain mixed-precision quantization."}]}'
 ```
 
+### Multimodal (image · audio · video) — on by default
+
+**No flags needed.** mlx-vlm bundles the deps (`Pillow`, `opencv`, `miniaudio`, `mlx-audio`) and the server accepts OpenAI `image_url` + `input_audio` content. Verified on this model — it described a test image **and transcribed speech** correctly through the server.
+
+```bash
+# image (http URL or data: URI)
+curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/json' -d '{"model":"<launched-id>",
+  "messages":[{"role":"user","content":[{"type":"text","text":"Describe this image."},
+    {"type":"image_url","image_url":{"url":"https://example.com/photo.jpg"}}]}]}'
+
+# audio (base64 wav/mp3, OpenAI input_audio)
+curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/json' -d '{"model":"<launched-id>",
+  "messages":[{"role":"user","content":[{"type":"text","text":"Transcribe this."},
+    {"type":"input_audio","input_audio":{"data":"data:audio/wav;base64,…","format":"wav"}}]}]}'
+
+# one-off via CLI:  aeon generate --image photo.jpg --prompt "…"   |   aeon generate --audio clip.wav --prompt "…"
+```
+
 Container convenience (host-native): `docker pull ghcr.io/aeon-7/gemma4-aeon-abliterated-mlx-toolkit` then `aeon serve` / `aeon validate` / `aeon benchmark`.
 
 ## 🧠 Context length & memory tuning
