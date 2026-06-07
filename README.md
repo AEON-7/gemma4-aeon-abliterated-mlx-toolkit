@@ -50,7 +50,7 @@ Container convenience (host-native): `docker pull ghcr.io/aeon-7/gemma4-aeon-abl
 
 ## 🧠 Context length & memory tuning
 
-The quickstarts set a memory-safe `--max-kv-size` for each model's **minimum** target Mac. KV cache here costs only **~74 KB/token** — Gemma-4's hybrid attention keeps just the **8 full-attention layers** growing; the **40 sliding layers stay capped at 1024** — so even 128K context is cheap. Measured on an M4 Pro:
+The quickstarts set a memory-safe `--max-kv-size` for each model's **minimum** target Mac. KV cache here costs only **~74 KB/token** — Gemma-4's hybrid attention keeps just the **8 full-attention layers** growing; the **40 sliding layers stay capped at 1024** — so even the model's full **256K** context is affordable. Measured on an M4 Pro:
 
 | `--max-kv-size` | Context | KV added | **FP4** peak (10 GB) | **FP8** peak (14 GB) |
 |---:|---:|---:|---:|---:|
@@ -58,15 +58,16 @@ The quickstarts set a memory-safe `--max-kv-size` for each model's **minimum** t
 | `16384` | 16K | 1.2 GB | ~13 GB | ~17 GB |
 | `32768` | 32K | 2.4 GB | ~14 GB | ~18 GB |
 | `65536` | 64K | 4.9 GB | ~17 GB | ~21 GB |
-| `131072` | 128K (max) | 9.7 GB | ~21 GB | ~25 GB |
+| `131072` | 128K | 9.7 GB | ~21 GB | ~25 GB |
+| `262144` | 256K (max) | 19.4 GB | ~31 GB | ~35 GB |
 
-**Pick by unified memory:** 16 GB → `16384` (FP4) · 24 GB → `32768` (FP8) · 32 GB → `65536` · **48 GB+ → `131072`** (full 128K). Raise it until peak approaches your RAM; past that macOS swaps (slow). `--max-kv-size` is a *rotating* cap — beyond it, the oldest tokens are evicted.
+**Pick by unified memory:** 16 GB → `16384` (FP4) · 24 GB → `32768` (FP8) · 32 GB → `65536` · **48 GB → `131072`** (128K) · **48 GB long-context → `262144`** (full **256K**, ~35 GB). Raise it until peak approaches your RAM; past that macOS swaps (slow). `--max-kv-size` is a *rotating* cap — beyond it, the oldest tokens are evicted.
 
 ### All server flags
 
 | Flag | Default | Effect on performance / memory |
 |---|---|---|
-| `--max-kv-size N` | unbounded (model max 128K) | **Main context↔RAM knob.** Caps context to N tokens, ~74 KB/token. |
+| `--max-kv-size N` | unbounded (model max **256K**) | **Main context↔RAM knob.** Caps context to N tokens, ~74 KB/token. |
 | `--kv-bits {8,4}` + `--kv-quant-scheme {uniform,turboquant}` | off | Quantize the KV cache. `8` ≈ halves KV (→ ~2× context per GB); `4`/turboquant ≈ quarter, small quality cost. |
 | `--quantized-kv-start N` | — | Keep the first N tokens full-precision, quantize the rest. |
 | `--prefill-step-size N` | 2048 | Tokens per prefill step. Lower (512) = less transient RAM on long prompts, slightly slower; higher = faster prefill, more RAM. |
