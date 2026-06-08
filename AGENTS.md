@@ -31,15 +31,16 @@ hf auth login            # or: export HF_TOKEN=hf_xxx   (needs AEON-7 access)
 ```bash
 MODEL=AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4     # or ...-MLX-8bit on 24 GB+
 python -m mlx_vlm.server --model "$MODEL" --port 8080
-# test:
+# test — set "temperature":1.0. The server defaults to greedy (temperature 0), which can
+# repeat/loop on long prompts; this model is tuned for temperature 1.0 (top_p 0.95, top_k 64):
 curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/json' \
-  -d '{"messages":[{"role":"user","content":"Say hi."}]}'
+  -d "{\"model\":\"$MODEL\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hi.\"}],\"temperature\":1.0}"
 ```
 Toolkit convenience (host-native): `aeon serve` (env `MODEL`, `PORT`).
 
 ## 4. One-off generation (text / image / audio)
 ```bash
-python -m mlx_vlm.generate --model "$MODEL" --prompt "..." --max-tokens 512
+python -m mlx_vlm.generate --model "$MODEL" --prompt "..." --max-tokens 512 --temperature 1.0   # temperature 1.0 = model's native sampling
 python -m mlx_vlm.generate --model "$MODEL" --image pic.jpg  --prompt "Describe it." --max-tokens 256
 python -m mlx_vlm.generate --model "$MODEL" --audio clip.wav --prompt "Transcribe + summarize." --max-tokens 256
 ```

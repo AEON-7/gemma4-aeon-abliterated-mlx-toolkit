@@ -12,6 +12,10 @@ Models (Hugging Face):
   AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4     (compact, 9.3 GB, 16 GB Macs)
   AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLX-8bit   (near-lossless, 13.4 GB, 24 GB+)
 
+Sampling: set temperature 1.0 in your requests ("temperature":1.0, or --temperature 1.0).
+   The server defaults to greedy (temperature 0), which can repeat or loop on long prompts;
+   this grid is tuned for its native temperature 1.0 (top_p 0.95, top_k 64).
+
 !! Metal GPU is NOT available inside containers on macOS. For Metal-accelerated inference,
    run host-native on your Mac:  pip install mlx-vlm && python -m mlx_vlm.server --model <repo>
    Full guide: https://github.com/AEON-7/gemma4-aeon-abliterated-mlx-toolkit#quickstart

@@ -39,11 +39,11 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 uv run --python 3.12 --with mlx-vlm -- python -m mlx_vlm.server --model AEON-7/Gemma-4-12B-it-AEON-Abliterated-MLXFP4 --port 8080 --max-kv-size 16384
 ```
 
-Once it's running, call it like any OpenAI endpoint:
+Once it's running, call it like any OpenAI endpoint. **Set `temperature: 1.0`** — the server defaults to *greedy* decoding (`temperature 0`), which can repeat or loop on long prompts; both builds are tuned for their native sampling (**`temperature 1.0`**, `top_p 0.95`, `top_k 64`). Clients that send no sampling params get the greedy default, so set it explicitly:
 
 ```bash
 curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/json' \
-  -d '{"messages":[{"role":"user","content":"Explain mixed-precision quantization."}]}'
+  -d '{"model":"<launched-id>","messages":[{"role":"user","content":"Explain mixed-precision quantization."}],"temperature":1.0}'
 ```
 
 ### Multimodal (image · audio · video) — on by default
