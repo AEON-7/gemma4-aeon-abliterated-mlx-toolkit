@@ -66,6 +66,20 @@ curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/jso
 
 Container convenience (host-native): `docker pull ghcr.io/aeon-7/gemma4-aeon-abliterated-mlx-toolkit` then `aeon serve` / `aeon validate` / `aeon benchmark`.
 
+### Optional: +MTP speculative decoding (~1.1–1.2× faster, output-identical)
+
+Google ships an official Gemma-4 **MTP draft** — `google/gemma-4-12B-it-assistant` (423M), an "assistant" head that *proposes* tokens the target then *verifies*. Every token is verified, so the **output is identical** — it's a pure throughput boost. Append three flags to either serve command above; the server auto-pulls the latest draft on first run (gated → run `hf auth login` once). **`--draft-block-size 2` is the benchmarked sweet spot** on these quants — drafting deeper is *slower* (draft acceptance decays with depth on abliterated/quantized weights):
+
+```bash
+# append to the MLX-8bit or MLXFP4 server command:
+  --draft-model google/gemma-4-12B-it-assistant --draft-kind mtp --draft-block-size 2
+
+# pre-fetch / refresh the latest draft explicitly:
+hf download google/gemma-4-12B-it-assistant
+```
+
+Lossless; +~0.9 GB RAM. Measured **~1.1–1.2×** on these abliterated builds (the draft is tuned for stock Gemma-4, so stock targets see more). Drop the `--draft-*` flags to disable.
+
 ## 🧠 Context length & memory tuning
 
 The quickstarts set a memory-safe `--max-kv-size` for each model's **minimum** target Mac. KV cache here costs only **~74 KB/token** — Gemma-4's hybrid attention keeps just the **8 full-attention layers** growing; the **40 sliding layers stay capped at 1024** — so even the model's full **256K** context is affordable. Measured on an M4 Pro:
