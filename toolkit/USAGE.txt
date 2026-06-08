@@ -16,6 +16,11 @@ Sampling: set temperature 1.0 in your requests ("temperature":1.0, or --temperat
    The server defaults to greedy (temperature 0), which can repeat or loop on long prompts;
    this grid is tuned for its native temperature 1.0 (top_p 0.95, top_k 64).
 
++MTP (optional, ~1.1-1.2x faster, output-identical): add Google's official Gemma-4 draft —
+   hf download google/gemma-4-12B-it-assistant
+   python -m mlx_vlm.server --model <repo> --draft-model google/gemma-4-12B-it-assistant --draft-kind mtp --draft-block-size 2
+   block_size 2 is the benchmarked optimum (deeper = slower). env form: MLX_VLM_DRAFT_MODEL / _KIND=mtp / _BLOCK_SIZE=2.
+
 !! Metal GPU is NOT available inside containers on macOS. For Metal-accelerated inference,
    run host-native on your Mac:  pip install mlx-vlm && python -m mlx_vlm.server --model <repo>
    Full guide: https://github.com/AEON-7/gemma4-aeon-abliterated-mlx-toolkit#quickstart

@@ -38,6 +38,19 @@ curl http://localhost:8080/v1/chat/completions -H 'Content-Type: application/jso
 ```
 Toolkit convenience (host-native): `aeon serve` (env `MODEL`, `PORT`).
 
+## 3b. Optional: +MTP speculative decoding (~1.1–1.2×, output-identical)
+Google's official Gemma-4 MTP draft (`google/gemma-4-12B-it-assistant`, 423M) proposes tokens the
+target verifies — identical output, just faster. **`--draft-block-size 2` is the benchmarked optimum**
+on these quants (deeper drafts are *slower* — acceptance decays with depth on abliterated/quantized weights):
+```bash
+hf download google/gemma-4-12B-it-assistant     # latest official MTP draft (gated; `hf auth login` once)
+python -m mlx_vlm.server --model "$MODEL" --port 8080 \
+  --draft-model google/gemma-4-12B-it-assistant --draft-kind mtp --draft-block-size 2
+# env form (works with `aeon serve`):
+#   MLX_VLM_DRAFT_MODEL=google/gemma-4-12B-it-assistant MLX_VLM_DRAFT_KIND=mtp MLX_VLM_DRAFT_BLOCK_SIZE=2 aeon serve
+```
+Lossless (target verifies every drafted token); +~0.9 GB RAM. Drop the `--draft-*` flags to disable.
+
 ## 4. One-off generation (text / image / audio)
 ```bash
 python -m mlx_vlm.generate --model "$MODEL" --prompt "..." --max-tokens 512 --temperature 1.0   # temperature 1.0 = model's native sampling
