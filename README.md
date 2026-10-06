@@ -210,6 +210,14 @@ toolkit/benchmark.py         # tok/s / TTFT / peak RAM
 Dockerfile · entrypoint.sh   # `aeon serve|generate|quantize|validate|benchmark`
 ```
 
+## Support the work
+
+AEON-7 models, drafters and tools are built and trained independently, on my own hardware. If they're useful to you, please consider supporting development:
+
+**[Become a member on Patreon → patreon.com/cw/AeonForge7/membership](https://www.patreon.com/cw/AeonForge7/membership)**
+
+Milestones unlock bigger work: reaching **500 paid supporters** will fund fine-tuning larger models and bigger project releases. Supporters also get early access to new releases, such as the [AEON DFlash2 drafter](https://www.patreon.com/AeonForge7/posts/early-access-for-171543895).
+
 ## License & responsibility
 
 Inherits the [Gemma license](https://ai.google.dev/gemma/terms). These are **uncensored** models — downstream safety and legal responsibility rest entirely with the operator; see the **Arbitration Clause** on each model card before use. Quantized by AEON-7 on Apple Silicon (MacBook Pro M4 Pro, 48 GB); recipe designed + adversarially validated with AI-engineering assistance from Anthropic.
